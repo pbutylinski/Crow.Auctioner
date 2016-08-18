@@ -1,0 +1,115 @@
+﻿<Window x:Class="Crow.Auctioner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Crow.Auctioner"
+        mc:Ignorable="d" Closing="Window_Closing"
+        Title="Crow.Auctioner" Height="500" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Menu>
+            <MenuItem Header="Presentation window">
+                <MenuItem x:Name="ShowPresentationWindowButton" Click="ShowPresentationWindowButton_Click" Header="Show window" />
+                <MenuItem x:Name="MakePresentationWndFullScreenButton" Click="MakePresentationWndFullScreenButton_Click" Header="Toggle window state/style" />
+            </MenuItem>
+            <MenuItem x:Name="SettingsButton" Click="SettingsButton_Click" Header="Settings" />
+        </Menu>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="40" />
+                </Grid.RowDefinitions>
+                <DataGrid x:Name="ItemsDataGrid" 
+                          IsReadOnly="True"
+                          CanUserSortColumns="False"
+                          AutoGenerateColumns="False"
+                          SelectionChanged="ItemsDataGrid_SelectionChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Item name" Width="2*" Binding="{Binding DisplayName}" />
+                        <DataGridTextColumn Header="From" Width="2*" Binding="{Binding Submissioner.Name}" />
+                        <DataGridCheckBoxColumn Header="Sold" Width="36" Binding="{Binding IsSold}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <Button x:Name="AddNewAuctionItemButton" Grid.Row="1" FontWeight="Bold" Click="AddNewAuctionItemButton_Click">
+                    Add new auction item
+                </Button>
+            </Grid>
+
+            <Grid x:Name="DetailsGrid" Grid.Column="1" Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="40" />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0">Name</Label>
+                <TextBox x:Name="ItemDisplayNameTextBox" Grid.Row="0" Grid.Column="1" Margin="5" Grid.ColumnSpan="2" />
+
+                <Label Grid.Row="1" VerticalAlignment="Center" Margin="0,1">Original price</Label>
+                <TextBox x:Name="ItemOriginalPriceTextBox" Grid.Row="1" Grid.Column="1" Margin="5" Grid.ColumnSpan="2" />
+
+                <Label Grid.Row="2" VerticalAlignment="Center" Margin="0,1">Submitter</Label>
+                <TextBox x:Name="ItemFromTextBox" Grid.Row="2" Grid.Column="1" Margin="5" Grid.ColumnSpan="2" />
+
+                <Rectangle Grid.Row="3" Grid.ColumnSpan="3" Grid.RowSpan="2" Fill="#FFFAFF93" Stroke="Red" />
+                <Label Grid.Row="3" VerticalAlignment="Center" Margin="0,6,0,7">Current bid</Label>
+                <TextBox x:Name="ItemPriceTextBox" 
+                        Grid.Row="3" Grid.Column="1" Margin="5"
+                        KeyDown="AuctionItemField_KeyDown" 
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        FontSize="20" FontWeight="Bold" Grid.ColumnSpan="2" />
+
+
+
+                <Label Grid.Row="4" VerticalAlignment="Center" Margin="0,1">Winner</Label>
+                <TextBox x:Name="ItemWinnerTextBox" Grid.Row="4" Grid.Column="1" Margin="5" Grid.ColumnSpan="2" />
+
+                <Label Grid.Row="5" VerticalAlignment="Center" Margin="0,1">Charity (%)</Label>
+                <TextBox x:Name="ItemCharityTextBox" Grid.Row="5" Grid.Column="1" Margin="5" Grid.ColumnSpan="2" />
+
+
+
+
+
+                <Button x:Name="DisplayItemButton" Click="DisplayItemButton_Click" Grid.Row="13" FontWeight="Bold">
+                    Display item on presenter
+                </Button>
+                <Button x:Name="SaveItemButton" Click="SaveItemButton_Click" Grid.Row="13" Grid.Column="1" FontWeight="Bold">
+                    Save changes
+                </Button>
+
+                <CheckBox x:Name="ItemSoldCheckBox" 
+                          Grid.Row="13" Grid.Column="2" Margin="10,0"
+                          VerticalContentAlignment="Center">Item is sold</CheckBox>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
