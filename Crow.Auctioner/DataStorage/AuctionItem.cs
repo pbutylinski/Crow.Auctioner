@@ -11,7 +11,7 @@ namespace Crow.Auctioner.DataStorage
     {
         public AuctionItem()
         {
-            StartingPrice = new Money(Currencies.PLN);
+            StartingPrice = new Money();
             CurrentPrice = StartingPrice;
             Submissioner = new Attendee();
         }

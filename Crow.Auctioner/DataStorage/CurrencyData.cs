@@ -9,9 +9,14 @@ namespace Crow.Auctioner.DataStorage
     [Serializable]
     public class CurrencyData
     {
-        public Currencies Currency { get; set; }
         public string FormatString { get; set; }
-        public decimal BaseExchangeRatio { get; set; }
+        public decimal ExchangeRate { get; set; }
         public string Name { get; set; }
+
+        public CurrencyData()
+        {
+            FormatString = "{0.00}";
+            ExchangeRate = 1;
+        }
     }
 }

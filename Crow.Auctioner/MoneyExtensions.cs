@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crow.Auctioner.DataStorage;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +9,10 @@ namespace Crow.Auctioner
 {
     public static class MoneyExtensions
     {
-        public static Money ConvertCurrency(this Money money, Currencies newCurrency)
+        public static Money ConvertCurrency(this Money money, CurrencyData currency)
         {
-            if (money.Currency == newCurrency) return money;
-
-            var baseValue = money.Value / CurrencyFactory.GetExchangeRate(money.Currency);
-            return new Money(newCurrency, baseValue * CurrencyFactory.GetExchangeRate(newCurrency));
+            var baseValue = money.Value / money.Currency.ExchangeRate;
+            return new Money(currency, baseValue * currency.ExchangeRate);
         }
     }
 }

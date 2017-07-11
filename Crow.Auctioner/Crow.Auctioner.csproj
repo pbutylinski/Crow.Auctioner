@@ -66,10 +66,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CurrencyFactory.cs" />
     <Compile Include="DataStorage\Attendee.cs" />
     <Compile Include="DataStorage\AuctionItem.cs" />
-    <Compile Include="Currencies.cs" />
     <Compile Include="DataStorage\CurrencyData.cs" />
     <Compile Include="Money.cs" />
     <Compile Include="DataStorage\SaveFile.cs" />

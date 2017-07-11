@@ -25,6 +25,10 @@ namespace Crow.Auctioner
         public PresentationWindow()
         {
             InitializeComponent();
+
+            _saveFile = SaveFile.Load();
+            TitleLabel.Content = _saveFile.Title;
+            TotalCharityLabel.Content = GetTotalCharity();
         }
 
         public void DisplayItem(AuctionItem item)
@@ -37,16 +41,17 @@ namespace Crow.Auctioner
             ItemCharityLabel.Content = item.ForCharityPercentage <= 0 ? "-" : String.Format("{0}%", item.ForCharityPercentage);
             ItemFromLabel.Content = item.Submissioner?.Name ?? "-";
 
-            ItemPriceCenterLabel.Content = item.CurrentPrice.ConvertCurrency(_saveFile.MainCurrency).ToString();
+            ItemPriceCenterLabel.Content = item.CurrentPrice.ConvertCurrency(_saveFile.PrimaryCurrency).ToString();
             
-            ItemPriceLeftLabel.Content = _saveFile.SideCurrencyA == null ? String.Empty :
-                item.CurrentPrice.ConvertCurrency((Currencies)_saveFile.SideCurrencyA).ToString();
+            ItemPriceLeftLabel.Content = _saveFile.SecondaryCurrency == null ? String.Empty :
+                item.CurrentPrice.ConvertCurrency(_saveFile.SecondaryCurrency).ToString();
 
-            ItemPriceRightLabel.Content = _saveFile.SideCurrencyB == null ? String.Empty :
-                item.CurrentPrice.ConvertCurrency((Currencies)_saveFile.SideCurrencyB).ToString();
+            ItemPriceRightLabel.Content = _saveFile.TertiaryCurrency == null ? String.Empty :
+                item.CurrentPrice.ConvertCurrency(_saveFile.TertiaryCurrency).ToString();
 
             SoldLabel.Visibility = item.IsSold ? Visibility.Visible : Visibility.Collapsed;
             TotalCharityLabel.Content = GetTotalCharity();
+            TitleLabel.Content = _saveFile.Title;
         }
 
         public void ToggleWindowState()
@@ -70,7 +75,7 @@ namespace Crow.Auctioner
             foreach (var item in _saveFile.AuctionItems.Where(k => k.IsSold))
                 total += item.GetCharityAmount();
 
-            return total.ConvertCurrency(_saveFile.MainCurrency).ToString();
+            return total.ConvertCurrency(_saveFile.PrimaryCurrency).ToString();
         }
     }
 }

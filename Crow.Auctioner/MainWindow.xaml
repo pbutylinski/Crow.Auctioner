@@ -108,6 +108,8 @@
 
                 <CheckBox x:Name="ItemSoldCheckBox" 
                           Grid.Row="13" Grid.Column="2" Margin="10,0"
+                          Checked="ItemSoldCheckBox_Checked"
+                          Unchecked="ItemSoldCheckBox_Unchecked"
                           VerticalContentAlignment="Center">Item is sold</CheckBox>
             </Grid>
         </Grid>

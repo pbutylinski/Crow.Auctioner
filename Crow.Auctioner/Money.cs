@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crow.Auctioner.DataStorage;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,18 +11,18 @@ namespace Crow.Auctioner
     public class Money
     {
         public decimal Value { get; set; }
-        public Currencies Currency { set; get; }
+        public CurrencyData Currency { get; set; }
 
         public Money()
         {
         }
 
-        public Money(Currencies currency)
+        public Money(CurrencyData currency)
         {
             Currency = currency;
         }
 
-        public Money(Currencies currency, decimal value)
+        public Money(CurrencyData currency, decimal value)
             : this(currency)
         {
             Value = value;
@@ -60,7 +61,7 @@ namespace Crow.Auctioner
         
         public override string ToString()
         {
-            return CurrencyFactory.FormatCurrency(Currency, Value);
+            return String.Format(Currency.FormatString, Value);
         }
     }
 }

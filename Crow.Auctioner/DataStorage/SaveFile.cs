@@ -13,19 +13,19 @@ namespace Crow.Auctioner.DataStorage
     public class SaveFile
     {
         public List<AuctionItem> AuctionItems { get; set; }
-        public List<CurrencyData> CurrencyDatas { get; set; }
-
-        public Currencies MainCurrency { get; set; }
-        public Currencies? SideCurrencyA { get; set; }
-        public Currencies? SideCurrencyB { get; set; }
-
         public Money AlreadyInCharity { get; set; }
+        public CurrencyData PrimaryCurrency { get; set; }
+        public CurrencyData SecondaryCurrency { get; set; }
+        public CurrencyData TertiaryCurrency { get; set; }
+        public string Title { get; set; }
 
         public SaveFile()
         {
             AuctionItems = new List<AuctionItem>();
-            CurrencyDatas = new List<CurrencyData>();
-            AlreadyInCharity = new Money(MainCurrency);
+            PrimaryCurrency = new CurrencyData();
+            SecondaryCurrency = new CurrencyData();
+            TertiaryCurrency = new CurrencyData();
+            AlreadyInCharity = new Money(PrimaryCurrency);
         }
 
         public void Save()
@@ -44,7 +44,10 @@ namespace Crow.Auctioner.DataStorage
             var xmlSerializer = new XmlSerializer(typeof(SaveFile));
             var path = GetFilePath();
 
-            if (!File.Exists(path)) return GetDefaultFile();
+            if (!File.Exists(path))
+            {
+                return GetDefaultFile();
+            }
 
             using (var fs = new FileStream(path, FileMode.Open))
             {
@@ -56,7 +59,7 @@ namespace Crow.Auctioner.DataStorage
         {
             var appDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
             var crowDir = Path.Combine(appDataDir, "Crow.d");
-            var fullPath = Path.Combine(crowDir, "Crow.Auctioner.Data.xml");
+            var fullPath = Path.Combine(crowDir, "Crow.Auctioner.Data.v2.xml");
 
             if (!Directory.Exists(crowDir)) Directory.CreateDirectory(crowDir);
 
@@ -65,34 +68,33 @@ namespace Crow.Auctioner.DataStorage
 
         private static SaveFile GetDefaultFile()
         {
+            var primaryCurrency = new CurrencyData
+            {
+                ExchangeRate = 1,
+                FormatString = "{0:0.00}€",
+                Name = "Euro"
+            };
+
             return new SaveFile
             {
-                MainCurrency = Currencies.PLN,
-                SideCurrencyA = Currencies.EUR,
-                SideCurrencyB = Currencies.CZK,
-                CurrencyDatas = new List<CurrencyData>
+                Title = "Auctioner",
+                PrimaryCurrency = primaryCurrency,
+                SecondaryCurrency = new CurrencyData
                 {
-                    new CurrencyData
-                    {
-                        Currency = Currencies.PLN,
-                        BaseExchangeRatio = 1,
-                        FormatString = "{0:0.00}zł",
-                        Name = "Polski złoty"
-                    },
-                    new CurrencyData
-                    {
-                        Currency = Currencies.EUR,
-                        BaseExchangeRatio = (decimal)0.225,
-                        FormatString = "{0:0.00}€",
-                        Name = "Euro"
-                    },
-                    new CurrencyData
-                    {
-                        Currency = Currencies.CZK,
-                        BaseExchangeRatio = (decimal)12.3,
-                        FormatString = "{0:0}CZK",
-                        Name = "Czech koruna"
-                    }
+                    ExchangeRate = 1,
+                    FormatString = "{0:0.00}Kč",
+                    Name = "Czech Koruna"
+                },
+                TertiaryCurrency = new CurrencyData
+                {
+                    ExchangeRate = 1,
+                    FormatString = "${0:0.00}",
+                    Name = "US Dollar"
+                },
+                AlreadyInCharity = new Money
+                {
+                    Currency = primaryCurrency,
+                    Value = 0
                 }
             };
         }

@@ -20,6 +20,7 @@ namespace Crow.Auctioner
         PresentationWindow _presentationWindow;
         SaveFile _saveFile;
         static int _selectedIndex;
+        bool _isLoading = false;
 
         AuctionItem CurrentItem { get { return ItemsDataGrid.SelectedItem as AuctionItem; } }
 
@@ -65,14 +66,19 @@ namespace Crow.Auctioner
                 return;
             }
 
+            _isLoading = true;
+
             DetailsGrid.Visibility = Visibility.Visible;
 
+            ItemOriginalPriceTextBox.Text = CurrentItem.StartingPrice.Value.ToString();
             ItemPriceTextBox.Text = CurrentItem.CurrentPrice.Value.ToString();
             ItemDisplayNameTextBox.Text = CurrentItem.DisplayName;
             ItemSoldCheckBox.IsChecked = CurrentItem.IsSold;
             ItemCharityTextBox.Text = CurrentItem.ForCharityPercentage.ToString();
             ItemFromTextBox.Text = CurrentItem.Submissioner?.Name;
             ItemWinnerTextBox.Text = CurrentItem.AuctionWinner?.Name;
+
+            _isLoading = false;
         }
 
         void Save()
@@ -108,18 +114,14 @@ namespace Crow.Auctioner
         void GetCurrentItemData()
         {
             if (CurrentItem == null) return;
-
-            decimal newAmount;
-            decimal origAmount;
-            decimal charity;
-
-            if (Decimal.TryParse(ItemPriceTextBox.Text, out newAmount))
+            
+            if (Decimal.TryParse(ItemPriceTextBox.Text, out var newAmount))
                 CurrentItem.CurrentPrice.Value = newAmount;
 
-            if (Decimal.TryParse(ItemOriginalPriceTextBox.Text, out origAmount))
+            if (Decimal.TryParse(ItemOriginalPriceTextBox.Text, out var origAmount))
                 CurrentItem.StartingPrice.Value = origAmount;
 
-            if (Decimal.TryParse(ItemCharityTextBox.Text, out charity))
+            if (Decimal.TryParse(ItemCharityTextBox.Text, out var charity))
                 CurrentItem.ForCharityPercentage = charity;
 
             CurrentItem.DisplayName = ItemDisplayNameTextBox.Text;
@@ -150,8 +152,8 @@ namespace Crow.Auctioner
             var newItem = new AuctionItem
             {
                 DisplayName = "New item",
-                StartingPrice = new Money(_saveFile.MainCurrency),
-                CurrentPrice = new Money(_saveFile.MainCurrency)
+                StartingPrice = new Money(_saveFile.PrimaryCurrency),
+                CurrentPrice = new Money(_saveFile.PrimaryCurrency)
             };
 
             _saveFile.AuctionItems.Add(newItem);
@@ -197,7 +199,33 @@ namespace Crow.Auctioner
             var sw = new SettingsWindow();
             sw.ShowDialog();
 
+            _saveFile = SaveFile.Load();
+
             LoadCurrentItemDetails();
+        }
+
+        private void ItemSoldCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (_isLoading)
+            {
+                return;
+            }
+
+            CurrentItem.IsSold = true;
+            UpdateCurrentItemData();
+            _presentationWindow.DisplayItem(CurrentItem);
+        }
+
+        private void ItemSoldCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (_isLoading)
+            {
+                return;
+            }
+
+            CurrentItem.IsSold = false;
+            UpdateCurrentItemData();
+            _presentationWindow.DisplayItem(CurrentItem);
         }
     }
 }
