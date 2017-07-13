@@ -9,6 +9,10 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using Crow.Auctioner.DataStorage;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
+using System.IO;
+using System.Timers;
 
 namespace Crow.Auctioner
 {
@@ -17,10 +21,11 @@ namespace Crow.Auctioner
     /// </summary>
     public partial class MainWindow : Window
     {
-        PresentationWindow _presentationWindow;
-        SaveFile _saveFile;
-        static int _selectedIndex;
-        bool _isLoading = false;
+        private PresentationWindow _presentationWindow;
+        private SaveFile _saveFile;
+        private int _selectedIndex;
+        private Timer _refreshTimer;
+        private bool _isLoading = false;
 
         AuctionItem CurrentItem { get { return ItemsDataGrid.SelectedItem as AuctionItem; } }
 
@@ -36,6 +41,9 @@ namespace Crow.Auctioner
         void InitializePresentationWindow()
         {
             _presentationWindow = new PresentationWindow();
+            _refreshTimer = new Timer(333);
+            _refreshTimer.Elapsed += (a, b) => Dispatcher.BeginInvoke(new Action(ShowPreview));
+            _refreshTimer.Start();
         }
 
         void LoadSaveFile()
@@ -105,7 +113,7 @@ namespace Crow.Auctioner
             if (e.Key == Key.Enter)
             {
                 UpdateCurrentItemData();
-                _presentationWindow.DisplayItem(CurrentItem);
+                UpdatePreview();
 
                 (sender as TextBox)?.SelectAll();
             }
@@ -114,7 +122,7 @@ namespace Crow.Auctioner
         void GetCurrentItemData()
         {
             if (CurrentItem == null) return;
-            
+
             if (Decimal.TryParse(ItemPriceTextBox.Text, out var newAmount))
                 CurrentItem.CurrentPrice.Value = newAmount;
 
@@ -170,7 +178,45 @@ namespace Crow.Auctioner
         private void DisplayItemButton_Click(object sender, RoutedEventArgs e)
         {
             UpdateCurrentItemData();
+            UpdatePreview();
+        }
+
+        private void UpdatePreview()
+        {
+            PresenterPreviewImage.Source = null;
             _presentationWindow.DisplayItem(CurrentItem);
+        }
+
+        private void ShowPreview()
+        {
+            if (_presentationWindow.MainGrid.ActualWidth <= 0)
+            {
+                PresenterPreviewImage.Source = null;
+                PreviewBorder.BorderBrush = Brushes.Red;
+                return;
+            }
+
+            try
+            {
+                PreviewBorder.BorderBrush = Brushes.Blue;
+
+                PreviewBorder.Background = _presentationWindow.Background;
+
+                var rtb = new RenderTargetBitmap(
+                      (int)_presentationWindow.MainGrid.ActualWidth,
+                      (int)_presentationWindow.MainGrid.ActualHeight,
+                      96,
+                      96,
+                      PixelFormats.Pbgra32);
+                rtb.Render(_presentationWindow.MainGrid);
+                PresenterPreviewImage.Source = rtb;
+
+                PreviewBorder.BorderBrush = Brushes.Black;
+            }
+            catch (Exception exc)
+            {
+                PreviewBorder.BorderBrush = Brushes.Red;
+            }
         }
 
         private void SaveItemButton_Click(object sender, RoutedEventArgs e)
@@ -213,7 +259,7 @@ namespace Crow.Auctioner
 
             CurrentItem.IsSold = true;
             UpdateCurrentItemData();
-            _presentationWindow.DisplayItem(CurrentItem);
+            UpdatePreview();
         }
 
         private void ItemSoldCheckBox_Unchecked(object sender, RoutedEventArgs e)
@@ -225,7 +271,7 @@ namespace Crow.Auctioner
 
             CurrentItem.IsSold = false;
             UpdateCurrentItemData();
-            _presentationWindow.DisplayItem(CurrentItem);
+            UpdatePreview();
         }
     }
 }
