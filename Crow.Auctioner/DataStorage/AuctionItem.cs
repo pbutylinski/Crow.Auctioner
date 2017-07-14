@@ -23,6 +23,7 @@ namespace Crow.Auctioner.DataStorage
         public Attendee AuctionWinner { get; set; }
         public decimal ForCharityPercentage { get; set; }
         public bool IsSold { get; set; }
+        public string PhotoFileName { get; set; }
 
         public Money GetCharityAmount()
         {

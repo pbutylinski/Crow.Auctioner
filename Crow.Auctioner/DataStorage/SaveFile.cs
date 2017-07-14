@@ -55,14 +55,31 @@ namespace Crow.Auctioner.DataStorage
             }
         }
 
-        private static string GetFilePath()
+        public static string GetSaveDir()
         {
             var appDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
             var crowDir = Path.Combine(appDataDir, "Crow.d");
-            var fullPath = Path.Combine(crowDir, "Crow.Auctioner.Data.v2.xml");
-
             if (!Directory.Exists(crowDir)) Directory.CreateDirectory(crowDir);
+            return crowDir;
+        }
 
+        public static string GetPhotoPath(string photoFileName)
+        {
+            var newDir = Path.Combine(SaveFile.GetSaveDir(), "pics");
+
+            if (Directory.Exists(newDir) == false)
+            {
+                Directory.CreateDirectory(newDir);
+            }
+
+            var path = Path.Combine(newDir, photoFileName);
+            return path;
+        }
+
+        private static string GetFilePath()
+        {
+            var crowDir = GetSaveDir();
+            var fullPath = Path.Combine(crowDir, "Crow.Auctioner.Data.v2.xml");
             return fullPath;
         }
 

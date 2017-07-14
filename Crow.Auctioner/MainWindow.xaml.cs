@@ -22,6 +22,7 @@ namespace Crow.Auctioner
     public partial class MainWindow : Window
     {
         private PresentationWindow _presentationWindow;
+        private ImageWindow _photoWindow;
         private SaveFile _saveFile;
         private int _selectedIndex;
         private Timer _refreshTimer;
@@ -33,6 +34,7 @@ namespace Crow.Auctioner
         {
             InitializeComponent();
             InitializePresentationWindow();
+            InitializePhotoWindow();
             LoadSaveFile();
 
             _selectedIndex = -1;
@@ -44,6 +46,11 @@ namespace Crow.Auctioner
             _refreshTimer = new Timer(333);
             _refreshTimer.Elapsed += (a, b) => Dispatcher.BeginInvoke(new Action(ShowPreview));
             _refreshTimer.Start();
+        }
+
+        void InitializePhotoWindow()
+        {
+            _photoWindow = new ImageWindow();
         }
 
         void LoadSaveFile()
@@ -85,6 +92,16 @@ namespace Crow.Auctioner
             ItemCharityTextBox.Text = CurrentItem.ForCharityPercentage.ToString();
             ItemFromTextBox.Text = CurrentItem.Submissioner?.Name;
             ItemWinnerTextBox.Text = CurrentItem.AuctionWinner?.Name;
+            
+
+            try
+            {
+                ItemPicture.Source = null;
+
+                var picturePath = SaveFile.GetPhotoPath(CurrentItem.PhotoFileName);
+                ItemPicture.Source = new BitmapImage(new Uri(picturePath));
+            }
+            catch { }
 
             _isLoading = false;
         }
@@ -185,6 +202,7 @@ namespace Crow.Auctioner
         {
             PresenterPreviewImage.Source = null;
             _presentationWindow.DisplayItem(CurrentItem);
+            _photoWindow.DisplayItem(CurrentItem);
         }
 
         private void ShowPreview()
@@ -270,6 +288,54 @@ namespace Crow.Auctioner
             }
 
             CurrentItem.IsSold = false;
+            UpdateCurrentItemData();
+            UpdatePreview();
+        }
+
+        private void BrowseImageButton_Click(object sender, RoutedEventArgs e)
+        {
+            var fop = new Microsoft.Win32.OpenFileDialog()
+            {
+                Filter = "Images|*.png;*.jpg;*.jpeg;*.bmp;*.tif;*.tiff|All files|*.*"
+            };
+
+            if (fop.ShowDialog() == true && File.Exists(fop.FileName))
+            {
+                try
+                {
+                    var fi = new FileInfo(fop.FileName);
+                    var newFilename = Guid.NewGuid().ToString() + fi.Extension;
+                    var newPath = SaveFile.GetPhotoPath(newFilename);
+
+                    File.Copy(fop.FileName, newPath);
+
+                    CurrentItem.PhotoFileName = newFilename;
+                }
+                catch (Exception exc)
+                {
+                    MessageBox.Show(exc.ToString(), "Error adding photo", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
+            UpdateCurrentItemData();
+            UpdatePreview();
+        }
+
+        private void ShowPhotoWindow_Click(object sender, RoutedEventArgs e)
+        {
+            _photoWindow.Close();
+            InitializePhotoWindow();
+            _photoWindow.Show();
+        }
+
+        private void TogglePhotoWindowState_Click(object sender, RoutedEventArgs e)
+        {
+            _photoWindow.ToggleWindowState();
+        }
+
+        private void ClearImageButton_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentItem.PhotoFileName = null;
             UpdateCurrentItemData();
             UpdatePreview();
         }
