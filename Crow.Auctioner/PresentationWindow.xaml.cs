@@ -27,7 +27,6 @@ namespace Crow.Auctioner
             InitializeComponent();
 
             _saveFile = SaveFile.Load();
-            TitleLabel.Content = _saveFile.Title;
             TotalCharityLabel.Content = GetTotalCharity();
         }
 
@@ -51,7 +50,6 @@ namespace Crow.Auctioner
 
             SoldLabel.Visibility = item.IsSold ? Visibility.Visible : Visibility.Collapsed;
             TotalCharityLabel.Content = GetTotalCharity();
-            TitleLabel.Content = _saveFile.Title;
         }
 
         public void ToggleWindowState()

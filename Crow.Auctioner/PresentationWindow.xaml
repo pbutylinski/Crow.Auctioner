@@ -7,33 +7,22 @@
         mc:Ignorable="d"
         Title="PresentationWindow" Height="550" Width="750">
     <Window.Background>
-        <LinearGradientBrush EndPoint="0,1" MappingMode="RelativeToBoundingBox" StartPoint="6.5,0" SpreadMethod="Reflect">
-            <GradientStop Color="#FF5058FF" Offset="0"/>
-            <GradientStop Color="#FF8C90DE" Offset="1"/>
-        </LinearGradientBrush>
+        <ImageBrush ImageSource="Images/background.png" Stretch="UniformToFill" />
     </Window.Background>
     <Grid x:Name="MainGrid">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
+                <RowDefinition Height="2*" />
                 <RowDefinition Height="4*" />
                 <RowDefinition Height="2*" />
-                <RowDefinition />
             </Grid.RowDefinitions>
-            <Label x:Name="TitleLabel" 
-               FontSize="50"
-               Opacity="0.2"
-               HorizontalContentAlignment="Center" 
-               VerticalContentAlignment="Center" 
-               FontWeight="Bold">
-                Auctioner
-            </Label>
+            <Image Source="Images/logo.png"></Image>
 
             <Border Grid.Row="1"
                 BorderBrush="White" 
                 Margin="10" 
                 BorderThickness="3">
-                <Grid Background="#4CFFFFFF">
+                <Grid Background="#ccFFFFFF">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="6*" />
                         <RowDefinition Height="2*" />
@@ -47,13 +36,9 @@
                     </Grid.ColumnDefinitions>
 
                     <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#FFF9F36E">
-                        <Label x:Name="ItemNameLabel"
-                               FontWeight="Bold"
-                               VerticalContentAlignment="Top"
-                               HorizontalContentAlignment="Center"
-                               FontSize="45">
-                            -
-                        </Label>
+                        <Viewbox StretchDirection="DownOnly" Stretch="Uniform" Margin="0,0,0,10">
+                            <ContentControl x:Name="ItemNameLabel" FontSize="1000" FontWeight="Bold"/>
+                        </Viewbox>
                     </Border>
 
                     <Label Grid.Row="1" Grid.Column="0" Padding="0" FontSize="15"
@@ -116,7 +101,7 @@
                 BorderBrush="White" 
                 Margin="10" 
                 BorderThickness="3">
-                <Grid Background="#4CFFFFFF">
+                <Grid Background="#ccFFFFFF">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="2*" />

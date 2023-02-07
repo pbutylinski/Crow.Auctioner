@@ -59,9 +59,6 @@
             <TextBox x:Name="NameATextBox" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="3" />
             <TextBox x:Name="NameBTextBox" VerticalContentAlignment="Center" Grid.Column="4" Grid.Row="3" />
             <TextBox x:Name="NameCTextBox" VerticalContentAlignment="Center" Grid.Column="7" Grid.Row="3" />
-
-            <Label Grid.Column="0" Grid.Row="5" HorizontalContentAlignment="Right" FontWeight="Bold">Window title:</Label>
-            <TextBox x:Name="WindowTitleTextBox" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="7" />
         </Grid>
 
         <Button x:Name="SaveButton" Grid.Row="2" Click="SaveButton_Click">Save settings</Button>

@@ -40,8 +40,6 @@ namespace Crow.Auctioner
             NameATextBox.Text = _saveFile.PrimaryCurrency.Name;
             NameBTextBox.Text = _saveFile.SecondaryCurrency.Name;
             NameCTextBox.Text = _saveFile.TertiaryCurrency.Name;
-
-            WindowTitleTextBox.Text = _saveFile.Title;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -60,7 +58,6 @@ namespace Crow.Auctioner
                 _saveFile.SecondaryCurrency.Name = NameBTextBox.Text;
                 _saveFile.TertiaryCurrency.Name = NameCTextBox.Text;
 
-                _saveFile.Title = WindowTitleTextBox.Text;
                 _saveFile.Save();
 
                 Close();
