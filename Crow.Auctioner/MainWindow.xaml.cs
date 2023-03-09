@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Crow.Auctioner.DataStorage;
+using CsvHelper;
+using CsvHelper.Configuration;
+using System;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using Crow.Auctioner.DataStorage;
 using System.Windows.Media.Imaging;
-using System.Windows.Media;
-using System.IO;
-using System.Timers;
 
 namespace Crow.Auctioner
 {
@@ -25,7 +21,6 @@ namespace Crow.Auctioner
         private ImageWindow _photoWindow;
         private SaveFile _saveFile;
         private int _selectedIndex;
-        private Timer _refreshTimer;
         private bool _isLoading = false;
 
         AuctionItem CurrentItem { get { return ItemsDataGrid.SelectedItem as AuctionItem; } }
@@ -43,9 +38,6 @@ namespace Crow.Auctioner
         void InitializePresentationWindow()
         {
             _presentationWindow = new PresentationWindow();
-            _refreshTimer = new Timer(333);
-            _refreshTimer.Elapsed += (a, b) => Dispatcher.BeginInvoke(new Action(ShowPreview));
-            _refreshTimer.Start();
         }
 
         void InitializePhotoWindow()
@@ -200,41 +192,8 @@ namespace Crow.Auctioner
 
         private void UpdatePreview()
         {
-            PresenterPreviewImage.Source = null;
             _presentationWindow.DisplayItem(CurrentItem);
             _photoWindow.DisplayItem(CurrentItem);
-        }
-
-        private void ShowPreview()
-        {
-            if (_presentationWindow.MainGrid.ActualWidth <= 0)
-            {
-                PresenterPreviewImage.Source = null;
-                PreviewBorder.BorderBrush = Brushes.Red;
-                return;
-            }
-
-            try
-            {
-                PreviewBorder.BorderBrush = Brushes.Blue;
-
-                PreviewBorder.Background = _presentationWindow.Background;
-
-                var rtb = new RenderTargetBitmap(
-                      (int)_presentationWindow.MainGrid.ActualWidth,
-                      (int)_presentationWindow.MainGrid.ActualHeight,
-                      96,
-                      96,
-                      PixelFormats.Pbgra32);
-                rtb.Render(_presentationWindow.MainGrid);
-                PresenterPreviewImage.Source = rtb;
-
-                PreviewBorder.BorderBrush = Brushes.Black;
-            }
-            catch (Exception exc)
-            {
-                PreviewBorder.BorderBrush = Brushes.Red;
-            }
         }
 
         private void SaveItemButton_Click(object sender, RoutedEventArgs e)
@@ -338,6 +297,57 @@ namespace Crow.Auctioner
             CurrentItem.PhotoFileName = null;
             UpdateCurrentItemData();
             UpdatePreview();
+        }
+
+        private void ReportButton_Click(object sender, RoutedEventArgs e)
+        {
+            var data = _saveFile.AuctionItems.Select(x => new
+            {
+                Name = x.DisplayName,
+                StartingPrice = x.StartingPrice.Value,
+                CurrentPrice = x.CurrentPrice.Value,
+                Currency = x.StartingPrice.Currency.Name,
+                Submissioner = x.Submissioner.Name,
+                Winner = x.AuctionWinner.Name,
+                Charity = x.ForCharityPercentage + "%",
+                IsSold = x.IsSold ? "Yes" : "No",
+                Photo = x.PhotoFileName
+            });
+
+            var sfd = new Microsoft.Win32.SaveFileDialog()
+            {
+                Filter = "CSV files|*.csv|All files|*.*"
+            };
+
+            if (sfd.ShowDialog() == true)
+            {
+                var csvHelperConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    NewLine = Environment.NewLine,
+                    Delimiter = ";"
+                };
+
+                try
+                {
+                    using (var writer = new StreamWriter(sfd.FileName))
+                    using (var csv = new CsvWriter(writer, csvHelperConfig))
+                    {
+                        csv.WriteRecords(data);
+                    }
+
+                    MessageBox.Show($"Succesfully exported a report with {data.Count()} items",
+                        "Crow.d Auctioner",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+                catch
+                {
+                    MessageBox.Show($"Failed to export",
+                        "Crow.d Auctioner",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+            }
         }
     }
 }

@@ -22,12 +22,12 @@
                 <MenuItem x:Name="TogglePhotoWindowState" Click="TogglePhotoWindowState_Click" Header="Toggle windows state/style" />
             </MenuItem>
             <MenuItem x:Name="SettingsButton" Click="SettingsButton_Click" Header="Settings" />
+            <MenuItem x:Name="ReportButton" Click="ReportButton_Click" Header="Export report" />
         </Menu>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
 
@@ -125,9 +125,6 @@
                           FontWeight="Bold" Foreground="Red"
                           VerticalContentAlignment="Center">Sold</CheckBox>
             </Grid>
-            <Border x:Name="PreviewBorder" BorderThickness="3" Grid.Column="3" BorderBrush="Black" Margin="7">
-                <Image x:Name="PresenterPreviewImage" />
-            </Border>
         </Grid>
     </Grid>
 </Window>
