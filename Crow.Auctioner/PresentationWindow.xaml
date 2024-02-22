@@ -16,7 +16,6 @@
                 <RowDefinition Height="4*" />
                 <RowDefinition Height="2*" />
             </Grid.RowDefinitions>
-            <Image Source="Images/logo.png"></Image>
 
             <Border Grid.Row="1"
                 BorderBrush="White" 
