@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="PresentationWindow" Height="550" Width="750">
     <Window.Background>
-        <ImageBrush ImageSource="Images/background.png" Stretch="UniformToFill" />
+        <ImageBrush ImageSource="Images/background.jpg" Stretch="UniformToFill" AlignmentX="Right" />
     </Window.Background>
     <Grid x:Name="MainGrid">
         <Grid>
@@ -34,7 +34,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#FFF9F36E">
+                    <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#FFDDDDDD">
                         <Viewbox StretchDirection="DownOnly" Stretch="Uniform" Margin="0,0,0,10">
                             <ContentControl x:Name="ItemNameLabel" FontSize="1000" FontWeight="Bold"/>
                         </Viewbox>
@@ -63,7 +63,7 @@
                        FontSize="30">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0,0.5" StartPoint="1,0.5">
-                                <GradientStop Color="#FF95DC95" Offset="0"/>
+                                <GradientStop Color="#BCBCBC" Offset="0"/>
                                 <GradientStop Color="White" Offset="1"/>
                             </LinearGradientBrush>
                         </Label.Background>
@@ -75,7 +75,7 @@
                        FontWeight="Bold"
                        VerticalContentAlignment="Center"
                        HorizontalContentAlignment="Center" 
-                       Background="#FF95DC95"
+                       Background="#BCBCBC"
                        Padding="0"
                        FontSize="45"></Label>
 
@@ -88,7 +88,7 @@
                        FontSize="30">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                <GradientStop Color="#FF95DC95" Offset="0"/>
+                                <GradientStop Color="#BCBCBC" Offset="0"/>
                                 <GradientStop Color="White" Offset="1"/>
                             </LinearGradientBrush>
                         </Label.Background>
@@ -125,7 +125,7 @@
                Foreground="Red" 
                FontWeight="Black" 
                Visibility="Collapsed"
-               RenderTransformOrigin="0.5,0.5">
+               RenderTransformOrigin="0.5,0.5" FontFamily="Bodoni MT Black">
             <Label.Effect>
                 <DropShadowEffect BlurRadius="10" RenderingBias="Quality"/>
             </Label.Effect>
