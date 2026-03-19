@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 
 namespace Crow.Auctioner
@@ -84,7 +85,7 @@ namespace Crow.Auctioner
             ItemCharityTextBox.Text = CurrentItem.ForCharityPercentage.ToString();
             ItemFromTextBox.Text = CurrentItem.Submissioner?.Name;
             ItemWinnerTextBox.Text = CurrentItem.AuctionWinner?.Name;
-            
+
 
             try
             {
@@ -349,5 +350,80 @@ namespace Crow.Auctioner
                 }
             }
         }
+
+        private void ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = new Microsoft.Win32.OpenFileDialog()
+            {
+                Filter = "CSV files|*.csv|All files|*.*"
+            };
+
+
+            var csvHelperConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                NewLine = Environment.NewLine,
+                Delimiter = ";"
+            };
+
+            if (ofd.ShowDialog() == true)
+            {
+                try
+                {
+                    using (var writer = new StreamReader(ofd.FileName))
+                    using (var csv = new CsvReader(writer, csvHelperConfig))
+                    {
+                        var items = csv.GetRecords<ImportRow>().Where(x => !string.IsNullOrWhiteSpace(x.ItemName));
+
+                        _saveFile.AuctionItems.AddRange(items.Select(x => new AuctionItem
+                        {
+                            StartingPrice = Parse(x.Price),
+                            DisplayName = x.ItemName,
+                            Submissioner = new Attendee
+                            {
+                                Id = x.UserId,
+                                Name = x.UserName
+                            }
+                        }));
+
+                        Save();
+                        ReloadItems();
+                    }
+
+                }
+                catch (Exception exc)
+                {
+
+                    MessageBox.Show($"Failed to import: " + exc.Message,
+                        "Crow.d Auctioner",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private Money Parse(string input)
+        {
+            var data = new string(input.Where(c => Char.IsDigit(c) || c == ',' || c == '.').ToArray());
+            decimal value = 0;
+
+            if (!string.IsNullOrEmpty(data)) { value = decimal.Parse(data); }
+
+            return new Money(_saveFile.PrimaryCurrency) { Value = value };
+        }
     }
+}
+
+public class ImportRow
+{
+    [CsvHelper.Configuration.Attributes.Index(6)]
+    public string ItemName { get; set; }
+
+    [CsvHelper.Configuration.Attributes.Index(8)]
+    public string Price { get; set; }
+
+    [CsvHelper.Configuration.Attributes.Index(4)]
+    public string UserId { get; set; }
+
+    [CsvHelper.Configuration.Attributes.Index(3)]
+    public string UserName { get; set; }
 }

@@ -21,7 +21,7 @@
                 BorderBrush="White" 
                 Margin="10" 
                 BorderThickness="3">
-                <Grid Background="#ccFFFFFF">
+                <Grid Background="#cc98bf8d">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="6*" />
                         <RowDefinition Height="2*" />
@@ -34,7 +34,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#FFDDDDDD">
+                    <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#cc98bf8d">
                         <Viewbox StretchDirection="DownOnly" Stretch="Uniform" Margin="0,0,0,10">
                             <ContentControl x:Name="ItemNameLabel" FontSize="1000" FontWeight="Bold"/>
                         </Viewbox>
@@ -63,8 +63,8 @@
                        FontSize="30">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0,0.5" StartPoint="1,0.5">
-                                <GradientStop Color="#BCBCBC" Offset="0"/>
-                                <GradientStop Color="White" Offset="1"/>
+                                <GradientStop Color="#cc323e21" Offset="0"/>
+                                <GradientStop Color="#cc98bf8d" Offset="1"/>
                             </LinearGradientBrush>
                         </Label.Background>
                     </Label>
@@ -75,7 +75,9 @@
                        FontWeight="Bold"
                        VerticalContentAlignment="Center"
                        HorizontalContentAlignment="Center" 
-                       Background="#BCBCBC"
+                           Foreground="#ffffff"
+                           
+                       Background="#cc323e21"
                        Padding="0"
                        FontSize="45"></Label>
 
@@ -88,8 +90,8 @@
                        FontSize="30">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                <GradientStop Color="#BCBCBC" Offset="0"/>
-                                <GradientStop Color="White" Offset="1"/>
+                                <GradientStop Color="#cc323e21" Offset="0"/>
+                                <GradientStop Color="#cc98bf8d" Offset="1"/>
                             </LinearGradientBrush>
                         </Label.Background>
                     </Label>
@@ -100,14 +102,15 @@
                 BorderBrush="White" 
                 Margin="10" 
                 BorderThickness="3">
-                <Grid Background="#ccFFFFFF">
+                <Grid Background="#cc323e21">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="2*" />
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Padding="0" FontSize="20" FontWeight="Bold"
+                    <Label Grid.Row="0" Padding="0" FontSize="20" FontWeight="Bold" Foreground="#ffffff"
                        VerticalAlignment="Bottom" HorizontalAlignment="Center">Total amount for charity:</Label>
                     <Label x:Name="TotalCharityLabel"
+                        Foreground="#ffffff"
                        Grid.Row="1" 
                        FontWeight="Bold"
                        VerticalContentAlignment="Center"
