@@ -372,12 +372,13 @@ namespace Crow.Auctioner
                     using (var writer = new StreamReader(ofd.FileName))
                     using (var csv = new CsvReader(writer, csvHelperConfig))
                     {
-                        var items = csv.GetRecords<ImportRow>().Where(x => !string.IsNullOrWhiteSpace(x.ItemName));
+                        var items = csv.GetRecords<ImportRow>()
+                            .Where(x => !string.IsNullOrWhiteSpace(x.ItemName));
 
                         _saveFile.AuctionItems.AddRange(items.Select(x => new AuctionItem
                         {
                             StartingPrice = Parse(x.Price),
-                            DisplayName = x.ItemName,
+                            DisplayName = x.NumberString + " - " + x.ItemName,
                             Submissioner = new Attendee
                             {
                                 Id = x.UserId,
@@ -406,7 +407,7 @@ namespace Crow.Auctioner
             var data = new string(input.Where(c => Char.IsDigit(c) || c == ',' || c == '.').ToArray());
             decimal value = 0;
 
-            if (!string.IsNullOrEmpty(data)) { value = decimal.Parse(data); }
+            if (!string.IsNullOrEmpty(data)) { value = decimal.Parse(data, CultureInfo.InvariantCulture); }
 
             return new Money(_saveFile.PrimaryCurrency) { Value = value };
         }
@@ -415,15 +416,19 @@ namespace Crow.Auctioner
 
 public class ImportRow
 {
-    [CsvHelper.Configuration.Attributes.Index(6)]
+
+    [CsvHelper.Configuration.Attributes.Name("Item ID")]
+    public string NumberString { get; set; }
+
+    [CsvHelper.Configuration.Attributes.Name("Item name | Nazwa przedmiotu")]
     public string ItemName { get; set; }
 
-    [CsvHelper.Configuration.Attributes.Index(8)]
+    [CsvHelper.Configuration.Attributes.Name("Starting price ")]
     public string Price { get; set; }
 
-    [CsvHelper.Configuration.Attributes.Index(4)]
+    [CsvHelper.Configuration.Attributes.Name("Badge number | Numer uczestnika")]
     public string UserId { get; set; }
 
-    [CsvHelper.Configuration.Attributes.Index(3)]
+    [CsvHelper.Configuration.Attributes.Name("Nick")]
     public string UserName { get; set; }
 }
